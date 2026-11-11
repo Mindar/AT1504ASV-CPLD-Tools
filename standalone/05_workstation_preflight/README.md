@@ -11,9 +11,8 @@ python preflight.py build\check003 --synthesize --language vhdl
 ```
 
 Static success verifies paths/files, not license checkout or execution policy.
-Require a successful --synthesize run on the actual work PC under its normal
-account before considering that machine ready. Inspect `preflight.json` and
-`smoke\validation.json`. Do not publish these workstation diagnostics.
+Run --synthesize under the account that will perform builds. Inspect
+`preflight.json` and `smoke\validation.json`.
 
 Optional --svf also needs ATMISP and an interactive desktop. ModelSim and
 WinCUPL are not dependencies of this HDL smoke test.
@@ -27,7 +26,7 @@ Use a short writable local path, and a new output directory for each run.
 Default ProChip root: `C:\ATMEL_PLS_Tools`. If yours differs, set
 `ATMEL_PLS_TOOLS` in the current shell before running Python. Precision needs
 a license valid for the machine; set `MGLS_LICENSE_FILE` as instructed by the
-license administrator. The personal VM's license is host-bound.
+license administrator. Confirm that the license is valid for the computer.
 
 These are complete source copies. They do not import from the parent project.
 Build outputs and logs stay in the selected output directory. Adapt the example

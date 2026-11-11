@@ -1,4 +1,4 @@
-"""Small, standard-library-only wrappers for the tools installed on this VM.
+"""Standard-library wrappers for Windows Atmel/Microchip PLD tools.
 
 These functions build files. They do not program hardware.
 """

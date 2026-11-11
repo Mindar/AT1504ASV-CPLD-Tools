@@ -28,8 +28,6 @@ def main():
         "platform": platform.platform(),
         "tools": {name: {"path": str(path), "exists": path.is_file()}
                   for name, path in tools.items()},
-        "downloaded_installers": [path.name for path in (Path.home() / "Downloads").iterdir()
-                                  if path.is_file() and path.suffix.lower() in (".zip", ".exe")],
     }
     print(json.dumps(report, indent=2))
 

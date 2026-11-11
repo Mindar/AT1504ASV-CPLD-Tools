@@ -24,7 +24,7 @@ Use a short writable local path, and a new output directory for each run.
 Default ProChip root: `C:\ATMEL_PLS_Tools`. If yours differs, set
 `ATMEL_PLS_TOOLS` in the current shell before running Python. Precision needs
 a license valid for the machine; set `MGLS_LICENSE_FILE` as instructed by the
-license administrator. The personal VM's license is host-bound.
+license administrator. Confirm that the license is valid for the computer.
 
 These are complete source copies. They do not import from the parent project.
 Build outputs and logs stay in the selected output directory. Adapt the example

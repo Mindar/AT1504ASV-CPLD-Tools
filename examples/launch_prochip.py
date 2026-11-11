@@ -9,7 +9,7 @@ def main():
     directory = PROCHIP / "bin"
     subprocess.Popen([str(directory / "visual.exe"), "ProChipDesPrd.im"],
                      cwd=directory, env=tool_environment())
-    print("ProChip launched. Save project files under G:\\Standardprojekt.")
+    print("ProChip launched.")
 
 
 if __name__ == "__main__":
