@@ -1,6 +1,6 @@
-# ATF1504ASV development: work-PC implementation notes
+# ATF1504ASV development
 
-This guide contains the settings, tool calls, and Python structure needed to recreate the workflow locally. Obtain software and licenses through your workplace's approved installation process, and confirm that printed technical material is permitted.
+This guide contains the settings, tool calls, and Python structure needed to recreate the workflow locally.
 
 ## 1. Target and tool setup
 
@@ -16,8 +16,6 @@ Target: **ATF1504ASV, 100-pin TQFP**, likely ordering code **ATF1504ASV-15AU100*
 | Development security | `OFF` |
 
 Reserve the package's JTAG pins: **TDI 4, TMS 15, TCK 62, TDO 73**. The ASV device uses a 3.3 V supply arrangement; consult its datasheet for the full power-pin and electrical requirements. Datasheet reference: **Microchip DS20006185A, ATF1504ASV/ATF1504ASVL**, particularly the 100-lead TQFP pinout tables.
-
-The following installation paths were used successfully. Adjust the Python constants to the work PC's actual paths.
 
 | Component | Executable/location |
 |---|---|
@@ -304,27 +302,7 @@ if "BUILD_FAILED:" in text or "BUILD_COMPLETED" not in text:
 
 Check that the expected EDIF was newly generated. The installed manual documents `exit -force`; the explicit markers allow Python to recognize a caught script failure even if the process returns zero.
 
-The EDIF fitting stage uses the following sidecar and command.
-
-**Verified integration requirement:** create a same-basename `.pin` file beside the EDIF before running the fitter. The tested fitter ignored EDIF `pin_number` properties by themselves and silently placed signals elsewhere. ProChip's GUI normally manages this sidecar. For the example, `design.pin` contains:
-
-```text
-CHIP "design" ASSIGNED TO AN TQFP100
-a : 6
-b : 8
-y : 14
-```
-
-Generate it from the reviewed PCB constraints in Python:
-
-```python
-pins = {"a": 6, "b": 8, "y": 14}
-text = 'CHIP "design" ASSIGNED TO AN TQFP100\n'
-text += "".join(f"{name} : {pin}\n" for name, pin in pins.items())
-(project / "design.pin").write_text(text, encoding="ascii")
-```
-
-Place `design.edf` in that same `project` directory for the following call:
+The documented fitter command adapted to the target is:
 
 ```text
 C:\ATMEL_PLS_Tools\ProChip\pldfit\fit1504.exe -i design.edf -ifmt EDIF -lib C:\ATMEL_PLS_Tools\ProChip\pldfit\aprim.lib -device TQFP100 -tech ATF1504ASV -preassign keep -str JTAG=ON -str security=OFF
@@ -332,25 +310,7 @@ C:\ATMEL_PLS_Tools\ProChip\pldfit\fit1504.exe -i design.edf -ifmt EDIF -lib C:\A
 
 Use the same Python runner and FIT/JED checks. Verify that the project's pin constraints reached the fitter; `KEEP` acts on the assignments supplied to it.
 
-**Validation update:** the installed license now works. VHDL and Verilog synthesis and EDIF-to-fitter integration passed for `ATF1504ASV-15AU100`, including the PIN sidecar and final placement checks. Verilog also passed offline SVF export. The reusable script is `examples/build_prochip_1504.py`. Recheck pin names case-insensitively where the EDIF fitter capitalizes names in reports.
-
-### Precision startup handling
-
-This Precision version occasionally stalled before printing its startup banner. Compatibility mode and CPU-affinity trials did not eliminate the issue. The project runner now handles it with a bootstrap and acknowledgement:
-
-```tcl
-fconfigure stdout -buffering line
-puts {PRECISION_STARTUP_READY}
-flush stdout
-while {![file exists {G:/pldwork/run001/startup.ready}]} {after 50}
-source {G:/pldwork/run001/build.tcl}
-```
-
-For each invocation, Python creates unique bootstrap/acknowledgement filenames, starts Precision, and watches its captured output for the emitted readiness message. It creates the acknowledgement file only after seeing that message. Without acknowledgement, the synthesis script remains unexecuted. If no readiness message arrives within 15 seconds, terminate that launched process tree and retry, with a maximum of three starts. Once acknowledged, apply the normal synthesis timeout and report failures without retrying the design work.
-
-Use `Popen` for this controlled interaction. On Windows, `taskkill /PID <owned-launcher-pid> /T /F` can terminate its descendants before the launcher is removed. Match the readiness message as an output line; a copy of the text in the logged command is insufficient. Keep an output log for every attempt and run synthesis jobs serially initially.
-
-The tested implementation is `run_precision()` in `examples/toolchain.py`. Twelve consecutive serial checks completed successfully with this mechanism, including one real startup timeout recovered on its second attempt. The underlying vendor startup issue remains unresolved.
+**Validation status:** the Precision shell invocation reached the license check on the VM. Synthesis and the resulting EDIF-to-fitter integration still require validation after licensing. The CUPL flow above was tested end to end.
 
 ## 6. HDL simulation with ModelSim
 
@@ -403,7 +363,7 @@ ATMISP can generate an SVF file without a programmer:
 5. Set the TCK-period field; **1 µs** was used for the offline test.
 6. Click Run and check the generated SVF and `jtag.log`.
 
-For an initial work-PC implementation, this can be a supervised step after the Python build. The VM also successfully automated it using Python `ctypes` and native Windows messages. The key control IDs in the tested ATMISP build were:
+For an initial implementation, this can be a supervised step after the Python build. The project also successfully automated it using Python `ctypes` and native Windows messages. The key control IDs in the tested ATMISP build were:
 
 | Control | ID |
 |---|---:|

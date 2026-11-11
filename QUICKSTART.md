@@ -2,9 +2,9 @@
 
 ## The short version
 
-Your target is the **ATF1504ASV, 100-pin TQFP**, likely ordering code **ATF1504ASV-15AU100**. Confirm the full marking before using real hardware.
+Target is the **ATF1504ASV, 100-pin TQFP**, likely ordering code **ATF1504ASV-15AU100**.
 
-Python does not implement the synthesis or programming algorithm. It **runs the installed tools, checks their results, and organizes the output**.
+Python runs the installed tools, checks their results, and organizes the output.
 
 For this VM, the useful flow is:
 
@@ -22,7 +22,7 @@ Design source + testbench + PCB pin assignments
               SVF programming file
 ```
 
-This entire software-only flow works using **CUPL**. The installed Precision license also enables the validated **VHDL/Verilog → EDIF → fitter** flow; the same ATMISP export stage applies.
+This entire software-only flow works today using **CUPL**. For **VHDL/Verilog**, Precision synthesis can replace the CUPL compiler; the fitter and ATMISP stages remain useful.
 
 ## 1. What matters for your particular part
 
@@ -38,9 +38,7 @@ This entire software-only flow works using **CUPL**. The installed Precision lic
 
 **Keep the actual PCB pin assignments fixed.** A successful fit is useless if the fitter moved your signals to different pins. Reserve JTAG pins **4, 15, 62, and 73** for this package.
 
-The demonstration uses inputs **6 and 8** and output **14**. Those are legal package pins, **not your board's pinout**. Do not program that example onto an arbitrary PCB.
-
-Also, “fits successfully” does not establish timing closure for the `-15` speed grade.
+The demonstration uses inputs **6 and 8** and output **14**.
 
 ## 2. Try the working example now
 
@@ -137,15 +135,7 @@ The lower-level scripts already implement command logging, timeouts, fresh outpu
 
 ## 4. If your design will be VHDL or Verilog
 
-**Update:** the Precision license is installed. The licensed VHDL synthesis and fitting flow has passed, including fixed-pin checks. The working entrypoint is:
-
-```powershell
-python examples\build_prochip_1504.py build\licensed1504 --language vhdl
-```
-
-See [ProChip validation](docs/PROCHIP_VALIDATION.md) for the PIN sidecar requirement, saved project, and IDE launch configuration. The original setup checklist follows.
-
-For your actual VHDL/Verilog project:
+Once the Precision license arrives:
 
 1. Install/configure the supplied **Precision OEM** license.
 2. Create one known-good project selecting your target, sources, top level, PCB pins, and timing requirements.
@@ -159,9 +149,9 @@ For your actual VHDL/Verilog project:
 5. Feed the resulting **EDIF** into the ProChip FIT1504 flow.
 6. Check the FIT report and export JED/SVF as above.
 
-The working target-specific script is `examples/build_prochip_1504.py`. Both VHDL and Verilog synthesis/fitting have passed, and Verilog also passed offline SVF export. Its shared runner handles intermittent pre-script startup stalls with a bounded handshake/retry. The project also retains `precision_discover.tcl`, `precision_build.tcl`, and `run_hdl.py` for custom scripts.
+The project includes `examples/precision_discover.tcl`, `precision_build.tcl`, and `run_hdl.py` to prepare for this. **Synthesis is currently license-blocked**, so the Precision → EDIF → fitter path still needs its first end-to-end validation after licensing.
 
-ModelSim is optional and outside the requested synthesis workflow. Its examples remain available for separately licensed simulation if needed later.
+**ModelSim is a separate licensing question.** The installed guide says Microchip supplies the Precision license but no longer supplies ModelSim licenses. Confirm whether your request covers simulation too. The included ModelSim example is prepared, but currently blocked by its missing license.
 
 See [the license-arrival checklist](docs/LICENSES.md) for exact next steps.
 
