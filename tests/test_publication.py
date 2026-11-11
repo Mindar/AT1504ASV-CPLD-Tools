@@ -46,7 +46,7 @@ class PublicationTests(unittest.TestCase):
                 publication.inspect_file(file)
 
     def test_independent_examples_use_only_local_or_standard_imports(self):
-        standard = {"argparse", "ctypes", "hashlib", "json", "os", "pathlib",
+        standard = {"argparse", "ctypes", "hashlib", "json", "os", "pathlib", "platform",
                     "shutil", "subprocess", "sys", "tempfile", "time"}
         directories = [path for path in (ROOT / "standalone").iterdir()
                        if path.is_dir() and path.name[:2].isdigit()]
