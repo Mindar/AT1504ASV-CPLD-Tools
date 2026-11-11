@@ -1,0 +1,67 @@
+# Python caches, virtual environments, and test reports
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+env/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+.coverage.*
+htmlcov/
+
+# Build output; keep HDL, Tcl, PIN constraints, and project settings trackable.
+/build/
+**/build/
+/dist/
+/publication/
+*.egg-info/
+*.log
+*.wlf
+
+# Vendor programs/installers are provisioned separately.
+*.exe
+*.dll
+*.sys
+*.msi
+*.zip
+*.7z
+
+# Generated research runs and diagnostic artifacts
+/research/
+/research/builds/
+/research/atmisp_batch/
+/research/atmisp_experiment/
+/research/license_checks/
+/research/licensed_probes/
+/research/negative_source/
+/research/precision_recovery/
+/research/precision_startup/
+/research/probes/
+/research/prochip_ide_check/
+/research/prochip_validation/
+/research/atmisp_create_chain.json
+/research/inspect_atmisp.json
+/research/inventory.json
+/research/validation.json
+
+# Extracted vendor documentation (recreated from the installed tools)
+/research/atmisp_help/
+/research/prochip_help/
+/research/manual_text/
+
+# Local license files and environment secrets
+license.dat
+*.lic
+.env
+.env.*
+!.env.example
+!.env.sample
+
+# Local editor and Windows metadata
+.idea/
+.vs/
+Thumbs.db
+Desktop.ini
+desktop.ini
